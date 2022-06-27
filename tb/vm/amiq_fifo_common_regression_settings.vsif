@@ -1,0 +1,18 @@
+//----------------------------------------------------------------------
+// Created by edaibr on Fri Feb 11 13:53:21 EET 2022
+// Company name: amiq
+// Project name: fifo
+// Additional details:
+// none
+//----------------------------------------------------------------------
+
+session amiq_fifo_reg
+{
+	top_dir: "$ENV(PROJ_HOME)/sim/work/regression_results"; //save location
+	output_mode: terminal; 
+	pre_session_script: "$ENV(PROJ_HOME)/sim/compile_run.py -tool xcelium -mode c -snapshot $DIR(session)"; //command executed before regression starts
+	//add post_session_script if needed
+	queuing_policy: round_robin; // specify order in which tests will run
+	
+};
+	

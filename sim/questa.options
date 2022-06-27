@@ -1,0 +1,5 @@
+-sv
+
+# list the files to compile
+-f $PROJ_HOME/sim/files.f
+

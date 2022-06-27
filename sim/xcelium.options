@@ -1,0 +1,28 @@
+# Force SystemVerilog compilation
+-sv
+
+# Wait for licence
+-licqueue
+
+# Turn on support for the UVM library
+-uvm
+
+# list the files to compile
+-f $PROJ_HOME/sim/files.f
+
+# Set default timescale in (System)Verilog modules
+-timescale 1ns/1ps
+
+# Enable coverage instrumentation
+-covfile $PROJ_HOME/sim/xcelium_coverage_options.ccf
+
+# Enable overwrite of coverage output files
+-covoverwrite
+
+# Specify the top module name
+-top amiq_fifo_tb_top
+
+# Enable line debug - breakpoints
+-linedebug
+
+-access rw

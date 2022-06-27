@@ -1,0 +1,114 @@
+waveform new -name "amiq_fifo"
+#
+# Mnemonic Maps
+#
+mmap new  -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new  -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+array unset createdGroup
+array set createdGroup {}
+#
+# Groups
+#
+if {[catch {group get -using [list DUT]}]} {
+set createdGroup([list DUT]) 1
+catch {group new -name DUT -overlay 0}
+}
+if {[catch {group get -using [list Agent In]}]} {
+set createdGroup([list Agent In]) 1
+catch {group new -name {Agent In} -overlay 0}
+}
+if {[catch {group get -using [list Agent Out]}]} {
+set createdGroup([list Agent Out]) 1
+catch {group new -name {Agent Out} -overlay 0}
+}
+if {[info exists createdGroup([list DUT])]} {
+group using DUT
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+group insert \
+    [subst  {[format {amiq_fifo_tb_top.DUT.clock}]} ] \
+    [subst  {[format {amiq_fifo_tb_top.DUT.reset_n}]} ]
+}
+
+if {[info exists createdGroup([list Agent In])]} {
+group using {Agent In}
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+group insert \
+    [subst  {[format {amiq_fifo_tb_top.in_if.address[4:0]}]} ] \
+    [subst  {[format {amiq_fifo_tb_top.in_if.data[4:0]}]} ]
+}
+
+if {[info exists createdGroup([list Agent Out])]} {
+group using {Agent Out}
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+group insert \
+    [subst  {[format {amiq_fifo_tb_top.out_if.address[4:0]}]} ] \
+    [subst  {[format {amiq_fifo_tb_top.out_if.data[4:0]}]} ]
+}
+
+
+set groupId0 [waveform add -groups DUT]
+
+
+set groupId0 [waveform add -groups {{Agent In}}]
+set gpGlist0 [waveform hierarchy contents $groupId0]
+set gpID0 [lindex $gpGlist0 0]
+foreach {name attrs} [subst  {
+    {[format {amiq_fifo_tb_top.in_if.address[4:0]}]} {}
+    {[format {amiq_fifo_tb_top.in_if.data[4:0]}]} {-radix %x}
+}] childcmds {
+    {}
+    {
+        set id $gpID0
+        waveform hierarchy collapse $id
+    }
+} {
+    set expected [ join [waveform signals -format path $gpID0] ]
+    if {[string equal $name $expected] || $name == "cdivider"} {
+        if {$attrs != ""} {
+            eval waveform format $gpID0 $attrs
+        }
+        if { $childcmds != ""} {
+            eval $childcmds
+        }
+    }
+    set gpGlist0 [lrange $gpGlist0 1 end]
+    set gpID0 [lindex $gpGlist0 0]
+}
+
+
+set groupId0 [waveform add -groups {{Agent Out}}]
+set gpGlist0 [waveform hierarchy contents $groupId0]
+set gpID0 [lindex $gpGlist0 0]
+foreach {name attrs} [subst  {
+    {[format {amiq_fifo_tb_top.out_if.address[4:0]}]} {}
+    {[format {amiq_fifo_tb_top.out_if.data[4:0]}]} {-radix %x}
+}] childcmds {
+    {}
+    {}
+} {
+    set expected [ join [waveform signals -format path $gpID0] ]
+    if {[string equal $name $expected] || $name == "cdivider"} {
+        if {$attrs != ""} {
+            eval waveform format $gpID0 $attrs
+        }
+        if { $childcmds != ""} {
+            eval $childcmds
+        }
+    }
+    set gpGlist0 [lrange $gpGlist0 1 end]
+    set gpID0 [lindex $gpGlist0 0]
+}
+
+
+waveform xview limits 1ps 7475000ps

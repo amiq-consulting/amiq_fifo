@@ -1,0 +1,14 @@
+# Enables scoring for all coverage types for all design units
+select_coverage -all -instance 
+
+# Enable scoring for specific code coverage types (FSM, expression etc.) for all design units (comment above option if used)
+select_coverage -block -expression -toggle -fsm 
+
+# Enables reporting of immediate assertions inside a class in a package (not reported by default)
+select_functional -imm_asrt_class_package
+
+# Force default value of the per_instance to 1 for all covergroups where this option is not set explicitly
+set_covergroup -per_instance_default_one
+
+# Support for all naming conventions for covergroups
+set_covergroup -new_instance_reporting

@@ -1,0 +1,25 @@
+//----------------------------------------------------------------------
+// Created by edaibr on Fri Feb 11 13:53:21 EET 2022
+// Company name: amiq
+// Project name: fifo
+// Additional details:
+// none
+//----------------------------------------------------------------------
+
+session amiq_fifo_formal_reg
+{
+	top_dir: "$ENV(PROJ_HOME)/sim/work/regression_results"; //save location
+	output_mode: terminal;
+	
+};
+
+group amiq_fifo_formal_tests
+{		
+	test amiq_fifo_formal_test {
+		scan_script: "vm_scan.pl jg.flt ";
+		run_script: "jg -cov $ENV(PROJ_HOME)/formal/fifo_setup.tcl -batch"; //specifies a shell command that launches a single run
+		timeout: 600; //maximum execution time in seconds
+		count: 1;
+	};
+
+};

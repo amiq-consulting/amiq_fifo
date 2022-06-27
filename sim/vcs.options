@@ -1,0 +1,9 @@
+-sverilog
+
+# list the files to compile
+-f $PROJ_HOME/sim/files.f
+
+-top amiq_fifo_tb_top
+
+# Set timescale
+-timescale=1ns/1ps

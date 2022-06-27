@@ -1,0 +1,49 @@
+//----------------------------------------------------------------------
+// Created by edaibr on Fri Feb 11 13:53:21 EET 2022
+// Company name: amiq
+// Project name: fifo
+// Additional details:
+// none
+//----------------------------------------------------------------------
+
+session amiq_fifo_formal_reg
+{
+	top_dir: "$ENV(PROJ_HOME)/sim/work/regression_results"; //save location
+	output_mode: terminal;
+	
+};
+
+group amiq_fifo_formal_tests
+{		
+	test amiq_fifo_formal_test {
+		scan_script: "vm_scan.pl jg.flt ";
+		run_script: "jg -cov $ENV(PROJ_HOME)/formal/fifo_setup.tcl -batch"; //specifies a shell command that launches a single run
+		timeout: 600;
+		count: 1;
+	};
+};
+
+group amiq_fifo_simulation_tests
+{	
+	scan_script: "vm_scan.pl shell.flt ius.flt ovm_sv_lib.flt vm.flt"; //specifies a shell script that scans the standard output of the run, looking for failures and other relevant information
+	run_script: "$ENV(PROJ_HOME)/sim/compile_run.py -mode cr -autorun -test $ATTR(top_files) -seed $ATTR(seed) -snapshot $DIR(session)"; //specifies a shell command that launches a single run
+	timeout: 600;
+	
+	count: 10;
+	seed: random;
+	
+	test amiq_fifo_random_test 
+	{
+		top_files: "amiq_fifo_random_test";
+	};
+	
+	test amiq_fifo_multiple_reset_test 
+	{
+		top_files: "amiq_fifo_multiple_reset_test";
+	};
+	
+	test amiq_fifo_set_thresh_test 
+	{
+		top_files: "amiq_fifo_set_thresh_test";
+	};
+};
